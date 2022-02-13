@@ -1,6 +1,7 @@
+use log::{debug, info};
 use remotefs::{RemoteError, RemoteFs};
-use remotefs_ftp::FtpFs;
-use std::path::Path;
+use remotefs_ssh::{SftpFs, SshOpts};
+use std::{io::Write, path::Path};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -29,30 +30,43 @@ pub struct Connection<C: RemoteFs> {
 }
 
 impl<C: RemoteFs> Connection<C> {
+    /// Copy files to destination
     pub fn copy(&mut self, files: Vec<String>, destination: String) -> Result<()> {
-        // TODO: REMOVE TEST CODE
+        let destination = Path::new(&destination[..]);
+        for filepath_string in files {
+            let filepath = Path::new(&filepath_string[..]);
+            let filename = filepath.file_name().expect("bad filename");
+            let remote_destination = destination.join(filename);
+            let remote_metadata = filepath.metadata()?;
+            info!("Copying: {filepath:?} to {remote_destination:?}");
+            let mut remote_file_handle = self
+                .client
+                .create(&remote_destination, &remote_metadata.into())?;
 
-        // get working directory
-        println!(
-            "Working Directory: {}",
-            self.client.pwd().ok().unwrap().display()
-        );
-        // change working directory
-        assert!(self.client.change_dir(Path::new("/tmp")).is_ok());
-        // disconnect
-        assert!(self.client.disconnect().is_ok());
+            let file_contents = std::fs::read(filepath)?;
+            remote_file_handle.write(&file_contents)?;
+        }
+
+        Ok(())
+    }
+
+    pub fn disconnect(&mut self) -> Result<()> {
+        self.client.disconnect()?;
         Ok(())
     }
 }
 
-impl Connection<FtpFs> {
+impl Connection<SftpFs> {
     pub fn new(config: Config) -> Result<Self> {
         let destination = parse_host(config.host)?;
 
-        let mut client = FtpFs::new(destination.hostname, destination.port)
-            .secure(true, true)
+        debug!("Destination: {destination:?}");
+
+        let mut client: SftpFs = SshOpts::new(destination.hostname)
+            .port(destination.port)
             .username(config.username)
-            .password(config.password);
+            .password(config.password)
+            .into();
 
         client.connect()?;
 

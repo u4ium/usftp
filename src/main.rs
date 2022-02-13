@@ -92,5 +92,6 @@ fn main() -> Result<(), Error> {
     let (config, files, destination) = get_command_line_args()?;
     let mut connection = Connection::new(config)?;
     connection.copy(files, destination)?;
+    connection.disconnect()?;
     Ok(())
 }
