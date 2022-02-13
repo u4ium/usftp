@@ -3,7 +3,7 @@ The Unsafe-Safe File Transfer Protocol Program
 
 ## Build and run
 
-### Build
+### Build And Run
 ```bash
 cargo run -- --help
 ```
