@@ -9,7 +9,7 @@ use usftp::{Config, Connection, Error};
 
 fn get_command_line_args() -> io::Result<(Config, Vec<String>, String)> {
     let matches = App::new("USFTP: The Unsafe-Safe File Transfer Protocol Program")
-        .version("0.1")
+        .version("1.0.0")
         .author("Joe Armitage <Joe@Armitage.com>")
         .about("An unsafe way to sftp copy some files")
         .arg(
