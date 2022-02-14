@@ -3,22 +3,19 @@ name: Rust
 on:
   push:
     branches: [master]
-    tags:
-      - "v*.*.*"
+  pull_request:
+    branches: [master]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-windows:
+  test-win:
     runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
       - name: Build
         run: cargo build --verbose
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: target/release/usftp.exe
+      - name: Run tests
+        run: cargo test --verbose
