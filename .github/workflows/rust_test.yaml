@@ -10,7 +10,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  test-win:
+  test-windows:
     runs-on: windows-latest
 
     steps:
