@@ -1,0 +1,23 @@
+name: Rust
+
+on:
+  push:
+    branches: [master]
+    tags:
+      - "v*.*.*"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test-win:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: cargo build --verbose
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/release/usftp.exe
