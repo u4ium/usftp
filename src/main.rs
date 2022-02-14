@@ -13,11 +13,11 @@ fn get_command_line_args() -> io::Result<(Config, Vec<String>, String)> {
         .author("Joe Armitage <Joe@Armitage.com>")
         .about("An unsafe way to sftp copy some files")
         .arg(
-            Arg::new("host")
-                .short('h')
-                .long("host")
-                .value_name("HOST")
-                .help("The URI for the host: format <HOSTNAME:PORT>")
+            Arg::new("address")
+                .short('a')
+                .long("address")
+                .value_name("ADDRESS")
+                .help("The URI address for the host: format <HOSTNAME:PORT> OR <HOSTNAME> (port is 22 by default)")
                 .required(true),
         )
         .arg(
@@ -37,6 +37,14 @@ fn get_command_line_args() -> io::Result<(Config, Vec<String>, String)> {
                 .required(true),
         )
         .arg(
+            Arg::new("config")
+                .short('c')
+                .long("config")
+                .value_name("CONFIG")
+                .help("The path to an SSH config file")
+                .required(false),
+        )
+        .arg(
             Arg::new("destination")
                 .value_name("DESTINATION")
                 .help("The destination path (on the host) to copy the files to")
@@ -48,27 +56,31 @@ fn get_command_line_args() -> io::Result<(Config, Vec<String>, String)> {
                 .help("One mandatory file followed by several optional files")
                 .required(true)
                 .min_values(1)
-                .multiple_values(true),
+                .multiple_occurrences(true),
         )
         .get_matches();
 
-    let host = matches
-        .value_of("host")
-        .expect("named argument <host> should exist")
-        .to_owned();
-    let username = matches
-        .value_of("user")
-        .expect("named argument <user> should exist")
-        .to_owned();
-    let password = matches
-        .value_of("password")
-        .expect("named argument <password> should exist")
-        .to_owned();
+    let config = {
+        let address = matches
+            .value_of("address")
+            .expect("named argument <address> should exist")
+            .to_owned();
+        let username = matches
+            .value_of("user")
+            .expect("named argument <user> should exist")
+            .to_owned();
+        let password = matches
+            .value_of("password")
+            .expect("named argument <password> should exist")
+            .to_owned();
+        let ssh_config = matches.value_of("config").map(|c| c.to_owned());
 
-    let config = Config {
-        host,
-        username,
-        password,
+        Config {
+            address,
+            username,
+            password,
+            ssh_config,
+        }
     };
 
     let files = matches
