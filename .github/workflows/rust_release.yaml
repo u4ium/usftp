@@ -16,6 +16,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build
         run: cargo build --release
+      - name: List Files
+        run: |
+          ls release-files
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
