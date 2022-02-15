@@ -1,17 +1,16 @@
 use std::io;
 
-extern crate clap;
 extern crate env_logger;
 
-use clap::{App, Arg};
+#[macro_use]
+extern crate clap;
+
+use clap::Arg;
 
 use usftp::{Config, Connection, Error};
 
 fn get_command_line_args() -> io::Result<(Config, Vec<String>, String)> {
-    let matches = App::new("USFTP: The Unsafe-Safe File Transfer Protocol Program")
-        .version("1.0.0")
-        .author("Joe Armitage <Joe@Armitage.com>")
-        .about("An unsafe way to sftp copy some files")
+    let matches = app_from_crate!()
         .arg(
             Arg::new("address")
                 .short('a')
@@ -41,13 +40,13 @@ fn get_command_line_args() -> io::Result<(Config, Vec<String>, String)> {
                 .short('c')
                 .long("config")
                 .value_name("CONFIG")
-                .help("An (optional) path to an SSH config file (defaults to ~/.ssh/config")
+                .help("An (optional) path to an SSH config file (defaults to ~/.ssh/config)")
                 .required(false),
         )
         .arg(
             Arg::new("destination")
                 .value_name("DESTINATION")
-                .help("The destination path (on the host) to copy the files to")
+                .help("The destination path (on the remote host) to copy the files to")
                 .required(true),
         )
         .arg(
@@ -56,7 +55,7 @@ fn get_command_line_args() -> io::Result<(Config, Vec<String>, String)> {
                 .help("One mandatory file followed by several optional files")
                 .required(true)
                 .min_values(1)
-                .multiple_occurrences(true),
+                .multiple_values(true),
         )
         .get_matches();
 
@@ -73,7 +72,7 @@ fn get_command_line_args() -> io::Result<(Config, Vec<String>, String)> {
             .value_of("password")
             .expect("named argument <password> should exist")
             .to_owned();
-        let ssh_config = matches.value_of("config").map(|c| c.to_owned());
+        let ssh_config = matches.value_of("config").map(str::to_owned);
 
         Config {
             address,

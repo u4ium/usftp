@@ -34,13 +34,13 @@ USAGE:
     usftp.exe [OPTIONS] --address <ADDRESS> --user <USER> --password <PASSWORD> <DESTINATION> <FILES>...
 
 ARGS:
-    <DESTINATION>    The destination path (on the host) to copy the files to
+    <DESTINATION>    The destination path (on the remote host) to copy the files to
     <FILES>...       One mandatory file followed by several optional files
 
 OPTIONS:
     -a, --address <ADDRESS>      The URI address for the host: format <HOSTNAME:PORT> OR <HOSTNAME>
                                  (port is 22 by default)
-    -c, --config <CONFIG>        An (optional) path to an SSH config file (defaults to ~/.ssh/config
+    -c, --config <CONFIG>        An (optional) path to an SSH config file (defaults to ~/.ssh/config)
     -h, --help                   Print help information
     -p, --password <PASSWORD>    The password used to log onto the server
     -u, --user <USER>            The username used to log onto the server
