@@ -41,7 +41,7 @@ fn get_command_line_args() -> io::Result<(Config, Vec<String>, String)> {
                 .short('c')
                 .long("config")
                 .value_name("CONFIG")
-                .help("The path to an SSH config file")
+                .help("An (optional) path to an SSH config file (defaults to ~/.ssh/config")
                 .required(false),
         )
         .arg(
