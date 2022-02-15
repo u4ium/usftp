@@ -6,7 +6,13 @@ This program is only "Unsafe" in that is takes the password to connect in plaint
 
 ## Build and run
 
-This is a basic rust CLI program, so it can be run from source using [cargo](https://doc.rust-lang.org/cargo/). The arguments to USFTP go after the `--` separator.
+This is a basic rust CLI program, so it can be run from source using [cargo](https://doc.rust-lang.org/cargo/). The arguments to USFTP go after the `--` separator, as in: `cargo run -- YOUR_ARGS_HERE`.
+
+Cargo can also compile a release binary with the command `cargo build --release`, after which a file called `usftp.exe` is created under `target/release/`, which is specific to your platform. Then, this binary is run with `usftp.exe YOUR_ARGS_HERE`.
+
+### Prebuilt Binaries
+
+A recent release of `usftp.exe` for Windows should be available [here](https://github.com/u4ium/usftp/releases/latest).
 
 ### Examples
 
@@ -14,17 +20,21 @@ This is a basic rust CLI program, so it can be run from source using [cargo](htt
   ```console
   cargo run -- --help
   ```
+  OR
+  ```console
+  usftp.exe --help
+  ```
 - Copy a file called `test.txt` into the `/tmp` folder on the `remote.server.com`:
   ```console
-  cargo run -- --address remote.server.com --user admin --password pass /tmp test.txt
+  usftp.exe --address remote.server.com --user admin --password pass /tmp test.txt
   ```
 - Do the same thing with shorter argument names:
   ```console
-  cargo run -- -a remote.server.com -u admin -p pass /tmp test.txt
+  usftp.exe -a remote.server.com -u admin -p pass /tmp test.txt
   ```
 - Use your own `.ssh/config` file (called `my_ssh_config`) and a non-standard port (`222`):
   ```console
-  cargo run -- -c my_ssh_config -a remote.server.com:222 -u admin -p pass /tmp test.txt
+  usftp.exe -c my_ssh_config -a remote.server.com:222 -u admin -p pass /tmp test.txt
   ```
 
 ### Usage
